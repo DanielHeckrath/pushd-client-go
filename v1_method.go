@@ -38,7 +38,7 @@ func (this *V1) SubscribeDevice(provider, token, language string) (SubscribeDevi
 	}
 
 	var responsePayload SubscribeDeviceResponsePayload
-	if err := json.Unmarshal([]byte{body}, &responsePayload); err != nil {
+	if err := json.Unmarshal([]byte(body), &responsePayload); err != nil {
 		return empty, err
 	}
 
@@ -49,7 +49,7 @@ func (this *V1) SubscribeDeviceEvent(deviceId, event string) error {
 	path := "/subscriber/" + deviceId + "/subscriptions/" + event
 	code, body, postErr := this.request.post(path, "application/x-www-form-urlencoded", nil)
 	if postErr != nil {
-		return ostErr
+		return postErr
 	}
 
 	if code == http.StatusBadRequest {
@@ -71,12 +71,11 @@ func (this *V1) SubscribeDeviceEvent(deviceId, event string) error {
 	return nil
 }
 
-// DELETE /subscriber/SUBSCRIBER_ID/subscriptions/EVENT_NAME
 func (this *V1) UnsubscribeDevice(deviceId string) error {
 	path := "/subscriber/" + deviceId
 	code, body, postErr := this.request.del(path)
 	if postErr != nil {
-		return ostErr
+		return postErr
 	}
 
 	if code == http.StatusBadRequest {
