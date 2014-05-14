@@ -2,7 +2,6 @@ package client
 
 import (
 	"encoding/json"
-	"json"
 	"net/http"
 )
 
