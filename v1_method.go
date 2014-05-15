@@ -92,3 +92,23 @@ func (this *V1) UnsubscribeDevice(deviceId string) error {
 
 	return nil
 }
+
+func (this *V1) NotifyDevices(event, lang string, v interface{}) error {
+	msg, strErr := stringify(v)
+	if strErr != nil {
+		return strErr
+	}
+
+	requestPayload := newNotifyPushNotificationRequestPayload(lang, msg)
+	path := "/event/" + event
+	code, body, postErr := this.request.post(path, "application/x-www-form-urlencoded", requestPayload)
+	if postErr != nil {
+		return postErr
+	}
+
+	if code != http.StatusNoContent {
+		return newUnexpectedResponseError(code, body)
+	}
+
+	return nil
+}
