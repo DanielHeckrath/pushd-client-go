@@ -93,12 +93,7 @@ func (this *V1) UnsubscribeDevice(deviceId string) error {
 	return nil
 }
 
-func (this *V1) NotifyDevices(event, lang, msg string, v interface{}) error {
-	data, strErr := stringify(v)
-	if strErr != nil {
-		return strErr
-	}
-
+func (this *V1) NotifyDevices(event, lang, msg string, data map[string]string) error {
 	requestPayload := newNotifyPushNotificationRequestPayload(lang, msg, data)
 	path := "/event/" + event
 	code, body, postErr := this.request.post(path, "application/x-www-form-urlencoded", requestPayload)
