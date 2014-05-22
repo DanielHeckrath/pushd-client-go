@@ -3,6 +3,7 @@ package client
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/url"
 )
@@ -32,6 +33,8 @@ func newNotifyPushNotificationRequestPayload(lang, msg string, data map[string]s
 	for key, value := range data {
 		d.Set("data."+key, value)
 	}
+
+	fmt.Printf("%#v\n", d.Encode())
 
 	return bytes.NewBufferString(d.Encode())
 }
