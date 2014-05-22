@@ -25,9 +25,10 @@ func newSubscribeDeviceRequestPayload(proto, token, lang string) io.Reader {
 	return bytes.NewBufferString(data.Encode())
 }
 
-func newNotifyPushNotificationRequestPayload(lang, msg string) io.Reader {
-	data := url.Values{}
-	data.Set("msg."+lang, msg)
+func newNotifyPushNotificationRequestPayload(lang, msg, data string) io.Reader {
+	d := url.Values{}
+	d.Set("msg."+lang, msg)
+	d.Set("data."+lang, data)
 
-	return bytes.NewBufferString(data.Encode())
+	return bytes.NewBufferString(d.Encode())
 }
