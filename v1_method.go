@@ -93,6 +93,10 @@ func (this *V1) UnsubscribeDevice(deviceId string) error {
 	return nil
 }
 
+/**
+ * Notifies all subscribers which are subscribed to the given language and sends them the given
+ * message and data.
+ */
 func (this *V1) NotifyDevices(event, lang, msg string, data map[string]string) error {
 	localizedMsg := map[string]string{}
 	localizedMsg[lang] = msg
