@@ -107,8 +107,8 @@ func (this *V1) NotifyDevices(event, lang, msg string, data map[string]string) e
  * Sends a message to all subscribers.
  *
  * The message can be translated via the `localizedMsg` map. The order of lookups is as
- * following (assuming a subscription for `de_DE`):
- * 1. `localizedMap['de_DE']`
+ * following (assuming a subscription for `de-DE`):
+ * 1. `localizedMap['de-DE']`
  * 2. `localizedMap['de']`
  * 3. `msg`
  *
