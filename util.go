@@ -28,7 +28,9 @@ func newSubscribeDeviceRequestPayload(proto, token, lang string) io.Reader {
 
 func newNotifyPushNotificationRequestPayload(msg string, localizedMsg, data map[string]string) io.Reader {
 	d := url.Values{}
-	d.Set("msg", msg)
+	if msg != "" {
+		d.Set("msg", msg)
+	}
 	for lang, localizedMsg := range localizedMsg {
 		d.Set("msg."+lang, localizedMsg)
 	}
