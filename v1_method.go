@@ -94,7 +94,13 @@ func (this *V1) UnsubscribeDevice(deviceId string) error {
 }
 
 func (this *V1) NotifyDevices(event, lang, msg string, data map[string]string) error {
-	requestPayload := newNotifyPushNotificationRequestPayload(lang, msg, data)
+	localizedMsg := map[string]string{}
+	localizedMsg[lang] = msg
+	return this.NotifyDevicesLocalized(event, "", localizedMsg, data)
+}
+
+func (this *V1) NotifyDevicesLocalized(event, msg string, localizedMsg, data map[string]string) error {
+	requestPayload := newNotifyPushNotificationRequestPayload(msg, localizedMsg, data)
 	path := "/event/" + event
 	code, body, postErr := this.request.post(path, "application/x-www-form-urlencoded", requestPayload)
 	if postErr != nil {
