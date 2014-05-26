@@ -99,6 +99,18 @@ func (this *V1) NotifyDevices(event, lang, msg string, data map[string]string) e
 	return this.NotifyDevicesLocalized(event, "", localizedMsg, data)
 }
 
+/**
+ * Sends a message to all subscribers.
+ *
+ * The message can be translated via the `localizedMsg` map. The order of lookups is as
+ * following (assuming a subscription for `de_DE`):
+ * 1. `localizedMap['de_DE']`
+ * 2. `localizedMap['de']`
+ * 3. `msg`
+ *
+ * If still no message is found, the subscriber is _not_ notified. To send a message only to subscribers
+ * with a certain locale, leave the `msg` empty.
+ */
 func (this *V1) NotifyDevicesLocalized(event, msg string, localizedMsg, data map[string]string) error {
 	requestPayload := newNotifyPushNotificationRequestPayload(msg, localizedMsg, data)
 	path := "/event/" + event
