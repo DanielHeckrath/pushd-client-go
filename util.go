@@ -16,6 +16,16 @@ func stringify(v interface{}) (string, error) {
 	return string(payloadBytes), nil
 }
 
+func newSubscribeDeviceEventsPayload(events map[string]interface{}) io.Reader {
+	payload, err := json.Marshal(events)
+
+	if err != nil {
+		return &bytes.Buffer{}
+	}
+
+	return bytes.NewBuffer(payload)
+}
+
 func newSubscribeDeviceRequestPayload(proto, token, lang string) io.Reader {
 	data := url.Values{}
 	data.Set("proto", proto)
