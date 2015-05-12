@@ -29,11 +29,7 @@ func (this *V1) SubscribeDevice(provider, token, language string) (SubscribeDevi
 		return empty, newUnexpectedResponseError(INVALID_PARAMETER_ERROR, body)
 	}
 
-	if code == http.StatusCreated {
-		return empty, newUnexpectedResponseError(ACCOUNT_ALREADY_EXISTS_ERROR, body)
-	}
-
-	if code != http.StatusOK {
+	if code != http.StatusOK && code != http.StatusCreated {
 		return empty, newUnexpectedResponseError(code, body)
 	}
 
