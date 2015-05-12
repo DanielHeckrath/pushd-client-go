@@ -56,12 +56,12 @@ func (this *V1) SubscribeDeviceEvent(deviceId, event string) error {
 		return newUnexpectedResponseError(ACCOUNT_NOT_EXISTS_ERROR, body)
 	}
 
-	if code == http.StatusNoContent {
-		return newUnexpectedResponseError(ACCOUNT_ALREADY_EXISTS_ERROR, body)
+	if code != http.StatusCreated && code != http.StatusNoContent {
+		return newUnexpectedResponseError(code, body)
 	}
 
-	if code != http.StatusCreated {
-		return newUnexpectedResponseError(code, body)
+	return nil
+}
 	}
 
 	return nil
