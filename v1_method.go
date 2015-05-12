@@ -62,6 +62,34 @@ func (this *V1) SubscribeDeviceEvent(deviceId, event string) error {
 
 	return nil
 }
+
+func (this *V1) SubscribeDeviceEvents(deviceId string, events ...string) error {
+	var empty interface{}
+
+	payload := make(map[string]interface{})
+
+	for _, v := range events {
+		payload[v] = empty
+	}
+
+	body := newSubscribeDeviceEventsPayload(payload)
+
+	path := "/subscriber/" + deviceId + "/subscriptions"
+	code, res, postErr := this.request.post(path, "application/x-www-form-urlencoded", body)
+	if postErr != nil {
+		return postErr
+	}
+
+	if code == http.StatusBadRequest {
+		return newUnexpectedResponseError(INVALID_PARAMETER_ERROR, res)
+	}
+
+	if code == http.StatusNotFound {
+		return newUnexpectedResponseError(ACCOUNT_NOT_EXISTS_ERROR, res)
+	}
+
+	if code != http.StatusNoContent {
+		return newUnexpectedResponseError(ACCOUNT_ALREADY_EXISTS_ERROR, res)
 	}
 
 	return nil
@@ -69,6 +97,28 @@ func (this *V1) SubscribeDeviceEvent(deviceId, event string) error {
 
 func (this *V1) UnsubscribeDevice(deviceId string) error {
 	path := "/subscriber/" + deviceId
+	code, body, postErr := this.request.del(path)
+	if postErr != nil {
+		return postErr
+	}
+
+	if code == http.StatusBadRequest {
+		return newUnexpectedResponseError(INVALID_PARAMETER_ERROR, body)
+	}
+
+	if code == http.StatusNotFound {
+		return newUnexpectedResponseError(ACCOUNT_NOT_EXISTS_ERROR, body)
+	}
+
+	if code != http.StatusNoContent {
+		return newUnexpectedResponseError(code, body)
+	}
+
+	return nil
+}
+
+func (this *V1) UnsubscribeDeviceEvent(deviceId, event string) error {
+	path := "/subscriber/" + deviceId + "/subscriptions/" + event
 	code, body, postErr := this.request.del(path)
 	if postErr != nil {
 		return postErr
