@@ -143,10 +143,10 @@ func (this *V1) UnsubscribeDeviceEvent(deviceId, event string) error {
  * Notifies all subscribers which are subscribed to the given language and sends them the given
  * message and data.
  */
-func (this *V1) NotifyDevices(event, lang, msg string, data map[string]string) error {
+func (this *V1) NotifyDevices(event, lang, msg, title string, data map[string]string) error {
 	localizedMsg := map[string]string{}
 	localizedMsg[lang] = msg
-	return this.NotifyDevicesLocalized(event, "", localizedMsg, data)
+	return this.NotifyDevicesLocalized(event, "", title, localizedMsg, data)
 }
 
 /**
@@ -161,8 +161,8 @@ func (this *V1) NotifyDevices(event, lang, msg string, data map[string]string) e
  * If still no message is found, the subscriber is _not_ notified. To send a message only to subscribers
  * with a certain locale, leave the `msg` empty.
  */
-func (this *V1) NotifyDevicesLocalized(event, msg string, localizedMsg, data map[string]string) error {
-	requestPayload := newNotifyPushNotificationRequestPayload(msg, localizedMsg, data)
+func (this *V1) NotifyDevicesLocalized(event, msg, title string, localizedMsg, data map[string]string) error {
+	requestPayload := newNotifyPushNotificationRequestPayload(msg, title, localizedMsg, data)
 	path := "/event/" + event
 	code, body, postErr := this.request.post(path, "application/x-www-form-urlencoded", requestPayload)
 	if postErr != nil {
