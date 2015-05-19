@@ -36,13 +36,16 @@ func newSubscribeDeviceRequestPayload(proto, token, lang string) io.Reader {
 	return bytes.NewBufferString(data.Encode())
 }
 
-func newNotifyPushNotificationRequestPayload(msg, title string, localizedMsg, data map[string]string) io.Reader {
+func newNotifyPushNotificationRequestPayload(msg, title string, localizedMsg, data map[string]string, incrementBadge bool) io.Reader {
 	d := url.Values{}
 	if msg != "" {
 		d.Set("msg", msg)
 	}
 	if title != "" {
 		d.Set("title", title)
+	}
+	if !incrementBadge {
+		d.Set("incrementBadge", "false")
 	}
 	for lang, localizedMsg := range localizedMsg {
 		d.Set("msg."+lang, localizedMsg)
