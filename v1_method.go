@@ -2,8 +2,18 @@ package client
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 )
+
+type eventPayload struct {
+	IgnoreMessage bool `json:"ignore_message"`
+}
+
+type EventSubscription struct {
+	Name          string
+	IgnoreMessage bool
+}
 
 type SubscribeDeviceResponsePayload struct {
 	Id      string `json:"id"`
@@ -137,6 +147,41 @@ func (this *V1) UnsubscribeDeviceEvent(deviceId, event string) error {
 	}
 
 	return nil
+}
+
+func (this *V1) GetDeviceEvents(deviceId string) ([]EventSubscription, error) {
+	path := "/subscriber/" + deviceId + "/subscriptions"
+	code, body, err := this.request.get(path)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if code != http.StatusOK {
+		return nil, fmt.Errorf("Unexpected response code: %d", code)
+	}
+
+	var raw map[string]eventPayload
+
+	err = json.Unmarshal([]byte(body), &raw)
+
+	if err != nil {
+		return nil, err
+	}
+
+	var response []EventSubscription
+
+	for k, v := range raw {
+
+		event := EventSubscription{
+			Name:          k,
+			IgnoreMessage: v.IgnoreMessage,
+		}
+
+		response = append(response, event)
+	}
+
+	return response, nil
 }
 
 /**
