@@ -188,10 +188,10 @@ func (this *V1) GetDeviceEvents(deviceId string) ([]EventSubscription, error) {
  * Notifies all subscribers which are subscribed to the given language and sends them the given
  * message and data.
  */
-func (this *V1) NotifyDevices(event, lang, msg, title string, data map[string]string, incrementBadge bool) error {
+func (this *V1) NotifyDevices(event, lang, msg, title string, data map[string]string, incrementBadge bool, category string, sound string) error {
 	localizedMsg := map[string]string{}
 	localizedMsg[lang] = msg
-	return this.NotifyDevicesLocalized(event, "", title, localizedMsg, data, incrementBadge)
+	return this.NotifyDevicesLocalized(event, "", title, localizedMsg, data, incrementBadge, category, sound)
 }
 
 /**
@@ -206,8 +206,8 @@ func (this *V1) NotifyDevices(event, lang, msg, title string, data map[string]st
  * If still no message is found, the subscriber is _not_ notified. To send a message only to subscribers
  * with a certain locale, leave the `msg` empty.
  */
-func (this *V1) NotifyDevicesLocalized(event, msg, title string, localizedMsg, data map[string]string, incrementBadge bool) error {
-	requestPayload := newNotifyPushNotificationRequestPayload(msg, title, localizedMsg, data, incrementBadge)
+func (this *V1) NotifyDevicesLocalized(event, msg, title string, localizedMsg, data map[string]string, incrementBadge bool, category string, sound string) error {
+	requestPayload := newNotifyPushNotificationRequestPayload(msg, title, localizedMsg, data, incrementBadge, category, sound)
 	path := "/event/" + event
 	code, body, postErr := this.request.post(path, "application/x-www-form-urlencoded", requestPayload)
 	if postErr != nil {
