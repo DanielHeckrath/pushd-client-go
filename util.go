@@ -36,7 +36,7 @@ func newSubscribeDeviceRequestPayload(proto, token, lang string) io.Reader {
 	return bytes.NewBufferString(data.Encode())
 }
 
-func newNotifyPushNotificationRequestPayload(msg, title string, localizedMsg, data map[string]string, incrementBadge bool) io.Reader {
+func newNotifyPushNotificationRequestPayload(msg, title string, localizedMsg, data map[string]string, incrementBadge bool, category string, sound string) io.Reader {
 	d := url.Values{}
 	if msg != "" {
 		d.Set("msg", msg)
@@ -50,7 +50,13 @@ func newNotifyPushNotificationRequestPayload(msg, title string, localizedMsg, da
 	for lang, localizedMsg := range localizedMsg {
 		d.Set("msg."+lang, localizedMsg)
 	}
-	d.Set("sound", "default")
+	if sound == "" {
+		sound = "default"
+	}
+	d.Set("sound", sound)
+	if category != "" {
+		d.Set("category", category)
+	}
 
 	for key, value := range data {
 		d.Set("data."+key, value)
