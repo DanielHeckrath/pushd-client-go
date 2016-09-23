@@ -220,3 +220,18 @@ func (this *V1) NotifyDevicesLocalized(event, msg, title string, localizedMsg, d
 
 	return nil
 }
+
+func (this *V1) NotifyContentAvailable(event string, data map[string]string) error {
+	requestPayload := newContentAvailablePayload(data)
+	path := "/event/" + event
+	code, body, postErr := this.request.post(path, "application/x-www-form-urlencoded", requestPayload)
+	if postErr != nil {
+		return postErr
+	}
+
+	if code != http.StatusNoContent {
+		return newUnexpectedResponseError(code, body)
+	}
+
+	return nil
+}

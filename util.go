@@ -68,3 +68,15 @@ func newNotifyPushNotificationRequestPayload(msg, title string, localizedMsg, da
 
 	return bytes.NewBufferString(d.Encode())
 }
+
+func newContentAvailablePayload(data map[string]string) io.Reader {
+	d := url.Values{}
+
+	d.Set("contentAvailable", "true")
+
+	for key, value := range data {
+		d.Set("data."+key, value)
+	}
+
+	return bytes.NewBufferString(d.Encode())
+}
