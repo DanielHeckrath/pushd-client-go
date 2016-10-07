@@ -3,6 +3,7 @@ package client
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/url"
 )
@@ -69,11 +70,12 @@ func newNotifyPushNotificationRequestPayload(msg, title string, localizedMsg, da
 	return bytes.NewBufferString(d.Encode())
 }
 
-func newContentAvailablePayload(data map[string]string) io.Reader {
+func newContentAvailablePayload(data map[string]string, badge int64) io.Reader {
 	d := url.Values{}
 
 	d.Set("contentAvailable", "true")
 	d.Set("incrementBadge", "false")
+	d.Set("badge", fmt.Sprintf("%d", badge))
 
 	for key, value := range data {
 		d.Set("data."+key, value)
