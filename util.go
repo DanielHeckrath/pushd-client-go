@@ -73,6 +73,7 @@ func newContentAvailablePayload(data map[string]string) io.Reader {
 	d := url.Values{}
 
 	d.Set("contentAvailable", "true")
+	d.Set("incrementBadge", "false")
 
 	for key, value := range data {
 		d.Set("data."+key, value)
