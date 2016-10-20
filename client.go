@@ -23,6 +23,7 @@ type V1 struct {
 // Client object holding versioned pushd clients.
 type Client struct {
 	V1 V1
+	V2 V2
 }
 
 func NewHttpClient(endpoint string) *Client {
@@ -52,6 +53,7 @@ func NewHttpClient(endpoint string) *Client {
 
 	return &Client{
 		V1: V1{request},
+		V2: V2{request},
 	}
 }
 

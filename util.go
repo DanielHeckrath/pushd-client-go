@@ -70,6 +70,52 @@ func newNotifyPushNotificationRequestPayload(msg, title string, localizedMsg, da
 	return bytes.NewBufferString(d.Encode())
 }
 
+func newNotificationPayload(request NotifyDevicesRequest) io.Reader {
+	if request.ContentAvailable {
+		var badge int64
+
+		if request.Badge != nil {
+			badge = request.Badge.Value
+		}
+
+		return newContentAvailablePayload(request.Data, badge)
+	}
+
+	d := url.Values{}
+	if request.Message != "" {
+		d.Set("msg", request.Message)
+	}
+	if request.Title != "" {
+		d.Set("title", request.Title)
+	}
+
+	if request.Badge != nil {
+		d.Set("badge", fmt.Sprintf("%d", request.Badge.Value))
+		d.Set("incrementBadge", "false")
+	} else {
+		if !request.IncrementBadge {
+			d.Set("incrementBadge", "false")
+		}
+	}
+
+	for lang, localizedMsg := range request.Localizations {
+		d.Set("msg."+lang, localizedMsg)
+	}
+	if request.Sound == "" {
+		request.Sound = "default"
+	}
+	d.Set("sound", request.Sound)
+	if request.Category != "" {
+		d.Set("category", request.Category)
+	}
+
+	for key, value := range request.Data {
+		d.Set("data."+key, value)
+	}
+
+	return bytes.NewBufferString(d.Encode())
+}
+
 func newContentAvailablePayload(data map[string]string, badge int64) io.Reader {
 	d := url.Values{}
 
